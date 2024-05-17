@@ -72,7 +72,8 @@ window.addEventListener("load",function(){
         }
         platformimg=new Image()
         platformimg.src="./platform.png"
-        placeplatform();
+        placeplatform()
+        
       requestAnimationFrame(update)
 })
 
@@ -80,7 +81,7 @@ function update()
 {
     requestAnimationFrame(update)
     ctx.clearRect(0,0,board.width,board.height)
-    if(doodler.y+doodler.dy+doodler.height>board.height || doodler.y+doodler.height+doodler.dy<0)
+    if(doodler.y+doodler.dy+doodler.height>board.height)
         {
             doodler.dy=-doodler.dy*friction
         }
@@ -106,12 +107,16 @@ function update()
     for(let i=0;i<platformarray.length;i++)
         {
             let platform=platformarray[i];
+            
             ctx.drawImage(platform.img,platform.x,platform.y,platform.width,platform.height)
             if (collision(doodler, platform)) {
+                
                 if (doodler.dy > 0 && doodler.y + doodler.height - doodler.dy <= platform.y) {
                     doodler.dy = 0; // Stop downward movement
                     doodler.y = platform.y - doodler.height; // Position doodler on top of the platform
+                    
                 }
+                
             }
         
         }
@@ -121,11 +126,24 @@ function placeplatform(){
 let platform={
     height:platformheight,
     width:platformwidth,
-    x:boardwidth/2,
-    y:boardheight/2,
+    x:boardwidth/2-Math.random()*boardheight/2,
+    y:boardheight/2-Math.random()*boardheight/8,
     img:platformimg,
 }
 platformarray.push(platform);
+
+for (let i = 0; i < 6; i++) {
+    let randomX = Math.floor(Math.random() * boardwidth*3/4); //(0-1) * boardWidth*3/4
+    let platform = {
+        img : platformimg,
+        x : randomX,
+        y : boardheight - 75*i - 150,
+        width : platformwidth,
+        height : platformheight
+    }
+
+    platformarray.push(platform);
+}
 }
 
 function collision(doodler, platform) {
