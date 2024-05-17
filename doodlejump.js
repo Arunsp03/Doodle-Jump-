@@ -28,6 +28,13 @@ let doodler={
 
 }
 
+//Platform
+
+let platformarray=[]
+let platformheight=18;
+let platformwidth=60;
+let platformimg;
+
 //Event listener for loading
 
 window.addEventListener("load",function(){
@@ -63,6 +70,9 @@ window.addEventListener("load",function(){
         doodler.img.onload=()=>{
             ctx.drawImage(doodler.img,doodler.x,doodler.y,doodler.width,doodler.height)
         }
+        platformimg=new Image()
+        platformimg.src="./platform.png"
+        placeplatform();
       requestAnimationFrame(update)
 })
 
@@ -84,7 +94,6 @@ function update()
         else if(doodler.x + doodler.dx<0)
             {
             doodler.x=board.width
-           
             }
         else {
             doodler.dx *= friction; // Apply horizontal friction
@@ -92,7 +101,41 @@ function update()
 
     doodler.y+=doodler.dy
     doodler.x += doodler.dx;
+    //Redraw doodler after the positions have been updated
     ctx.drawImage(doodler.img,doodler.x,doodler.y,doodler.width,doodler.height)
+    for(let i=0;i<platformarray.length;i++)
+        {
+            let platform=platformarray[i];
+            ctx.drawImage(platform.img,platform.x,platform.y,platform.width,platform.height)
+            if (collision(doodler, platform)) {
+                if (doodler.dy > 0 && doodler.y + doodler.height - doodler.dy <= platform.y) {
+                    doodler.dy = 0; // Stop downward movement
+                    doodler.y = platform.y - doodler.height; // Position doodler on top of the platform
+                }
+            }
+        
+        }
+   
+}
+function placeplatform(){
+let platform={
+    height:platformheight,
+    width:platformwidth,
+    x:boardwidth/2,
+    y:boardheight/2,
+    img:platformimg,
+}
+platformarray.push(platform);
+}
 
-    
+function collision(doodler, platform) {
+    // Check for horizontal collision
+    if (doodler.x < platform.x + platform.width && doodler.x + doodler.width > platform.x) {
+        // Check for vertical collision
+        if (doodler.y < platform.y + platform.height && doodler.y + doodler.height > platform.y) {
+            // Ensure collision only when falling down on the platform
+            return doodler.y + doodler.height <= platform.y + doodler.dy;
+        }
+    }
+    return false;
 }
