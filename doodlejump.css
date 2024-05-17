@@ -1,0 +1,8 @@
+#board{
+    background-image: url("./doodlejumpbg.png");
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
