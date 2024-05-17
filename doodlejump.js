@@ -31,7 +31,7 @@ let doodler={
 //Event listener for loading
 
 window.addEventListener("load",function(){
-    
+    let doodlerimg;
     //Add event listener for key press
     window.addEventListener("keypress",function({key}){
         let keypressed=key.toLowerCase();
@@ -41,9 +41,13 @@ window.addEventListener("load",function(){
                 break;
             case 'a':
                 doodler.dx-=velocity
+                doodlerimg.src='./doodler-left.png'
+        doodler.img=doodlerimg
                 break;
             case 'd':
                 doodler.dx+=velocity
+                doodlerimg.src='./doodler-right.png'
+        doodler.img=doodlerimg
                 break;
         }
 
@@ -52,10 +56,10 @@ window.addEventListener("load",function(){
         board.height=boardheight
         board.width=boardwidth
         //loading the images
-        let doodlerimg=new Image()
+        doodlerimg=new Image()
         doodlerimg.src='./doodler-left.png'
         doodler.img=doodlerimg
-        console.log(doodler);
+        // console.log(doodler);
         doodler.img.onload=()=>{
             ctx.drawImage(doodler.img,doodler.x,doodler.y,doodler.width,doodler.height)
         }
