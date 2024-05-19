@@ -4,10 +4,10 @@ let board=document.getElementById("board");
 let ctx=board.getContext("2d")
 let boardheight=576;
 let boardwidth=360;
-let  velocity=10
+let  velocity=7;
 let gravity=0.5;
 let friction=0.9;
-
+let isgameover=false
 //doodler
 
 let doodlerwidth=46;
@@ -19,8 +19,8 @@ let doodlerleftimg;
 
 let doodler={
     img:null,
-    x:doodlerx,
-    y:doodlery,
+    x:50,
+    y:boardheight-30-doodlerheight,
     width:doodlerwidth,
     height:doodlerheight,
     dx:0,
@@ -40,11 +40,27 @@ let platformimg;
 window.addEventListener("load",function(){
     let doodlerimg;
     //Add event listener for key press
-    window.addEventListener("keypress",function({key}){
+    window.addEventListener("keyup",function({key}){
         let keypressed=key.toLowerCase();
         switch (keypressed){
             case 'w':
                 doodler.dy-=velocity
+                if(isgameover){
+                    isgameover=false
+                    platformarray=[]
+                    doodler={
+                        img:doodlerimg,
+                        x:50,
+                        y:boardheight-30-doodlerheight,
+                        width:doodlerwidth,
+                        height:doodlerheight,
+                        dx:0,
+                        dy:0
+                    
+                    }
+                    placeplatform();
+                    update()
+                }
                 break;
             case 'a':
                 doodler.dx-=velocity
@@ -73,14 +89,28 @@ window.addEventListener("load",function(){
         platformimg=new Image()
         platformimg.src="./platform.png"
         placeplatform()
-        
       requestAnimationFrame(update)
 })
 
 function update()
 {
+    if(doodler.y>=525)
+        {
+            isgameover=true;
+            ctx.fillStyle="black"   
+            ctx.font="45px sans-serif"
+            ctx.fillText("Game Over",20,60)
+            return
+        }
+
+   
     requestAnimationFrame(update)
+    
+    
     ctx.clearRect(0,0,board.width,board.height)
+  
+
+    
     if(doodler.y+doodler.dy+doodler.height>board.height)
         {
             doodler.dy=-doodler.dy*friction
@@ -108,6 +138,14 @@ function update()
         {
             let platform=platformarray[i];
             
+            //Keep doodler static and move the platforms
+            if(doodler.dy<0 && doodler.y<board.height*(2/4))
+            {
+                platform.y+=10;
+                
+              
+            }
+            
             ctx.drawImage(platform.img,platform.x,platform.y,platform.width,platform.height)
             if (collision(doodler, platform)) {
                 
@@ -118,16 +156,27 @@ function update()
                 }
                 
             }
-        
+         
+          
+            if (platform.y > board.height) {
+                platformarray.splice(i, 1);
+                i--;
+            }
         }
+        
+        if (platformarray.length < 6) {
+            newPlatform();
+        }   
+ 
+
    
 }
 function placeplatform(){
 let platform={
     height:platformheight,
     width:platformwidth,
-    x:boardwidth/2-Math.random()*boardheight/2,
-    y:boardheight/2-Math.random()*boardheight/8,
+    x:50,
+    y:boardheight-30,
     img:platformimg,
 }
 platformarray.push(platform);
@@ -144,6 +193,19 @@ for (let i = 0; i < 6; i++) {
 
     platformarray.push(platform);
 }
+}
+
+function newPlatform()
+{
+    let randomX = Math.floor(Math.random() * boardwidth*3/4); //(0-1) * boardWidth*3/4
+    let platform={
+        height:platformheight,
+        width:platformwidth,
+        x : randomX,
+        y:-10,
+        img:platformimg,
+    }
+    platformarray.push(platform);
 }
 
 function collision(doodler, platform) {
