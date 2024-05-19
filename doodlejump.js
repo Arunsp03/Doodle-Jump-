@@ -8,6 +8,7 @@ let  velocity=7;
 let gravity=0.5;
 let friction=0.9;
 let isgameover=false
+let score=0
 //doodler
 
 let doodlerwidth=46;
@@ -100,15 +101,20 @@ function update()
             ctx.fillStyle="black"   
             ctx.font="45px sans-serif"
             ctx.fillText("Game Over",20,60)
+            ctx.fillStyle='black'
+    ctx.font="40px sans-serif"
+    ctx.fillText("Final Score "+score,20,100)
             return
         }
 
-   
-    requestAnimationFrame(update)
     
     
     ctx.clearRect(0,0,board.width,board.height)
-  
+    score=doodler.y
+    ctx.fillStyle='black'
+    ctx.font="20px sans-serif"
+    ctx.fillText("Score "+score,10,20)
+    requestAnimationFrame(update)
 
     
     if(doodler.y+doodler.dy+doodler.height>board.height)
