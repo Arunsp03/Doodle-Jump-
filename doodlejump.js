@@ -9,6 +9,7 @@ let gravity=0.5;
 let friction=0.9;
 let isgameover=false
 let score=0
+
 //doodler
 
 let doodlerwidth=46;
@@ -46,6 +47,7 @@ window.addEventListener("load",function(){
         switch (keypressed){
             case 'w':
                 doodler.dy-=velocity
+                //Restart in case game is over
                 if(isgameover){
                     isgameover=false
                     platformarray=[]
@@ -102,15 +104,15 @@ function update()
             ctx.font="45px sans-serif"
             ctx.fillText("Game Over",20,60)
             ctx.fillStyle='black'
-    ctx.font="40px sans-serif"
-    ctx.fillText("Final Score "+score,20,100)
+            ctx.font="40px sans-serif"
+            ctx.fillText("Final Score "+score,20,100)
             return
         }
 
     
     
     ctx.clearRect(0,0,board.width,board.height)
-    score=doodler.y
+    
     ctx.fillStyle='black'
     ctx.font="20px sans-serif"
     ctx.fillText("Score "+score,10,20)
@@ -153,12 +155,18 @@ function update()
             }
             
             ctx.drawImage(platform.img,platform.x,platform.y,platform.width,platform.height)
+       
             if (collision(doodler, platform)) {
                 
+               
                 if (doodler.dy > 0 && doodler.y + doodler.height - doodler.dy <= platform.y) {
                     doodler.dy = 0; // Stop downward movement
                     doodler.y = platform.y - doodler.height; // Position doodler on top of the platform
-                    
+                    if(!platform.passed )
+                        {
+                            score+=1;
+                            platform.passed=true
+                        }
                 }
                 
             }
@@ -172,10 +180,7 @@ function update()
         
         if (platformarray.length < 6) {
             newPlatform();
-        }   
- 
-
-   
+        }     
 }
 function placeplatform(){
 let platform={
@@ -194,9 +199,9 @@ for (let i = 0; i < 6; i++) {
         x : randomX,
         y : boardheight - 75*i - 150,
         width : platformwidth,
-        height : platformheight
+        height : platformheight,
+        passed:false
     }
-
     platformarray.push(platform);
 }
 }
@@ -210,6 +215,7 @@ function newPlatform()
         x : randomX,
         y:-10,
         img:platformimg,
+        passed:false
     }
     platformarray.push(platform);
 }
