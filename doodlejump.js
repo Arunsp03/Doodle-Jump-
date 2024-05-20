@@ -161,13 +161,16 @@ function update()
                
                 if (doodler.dy > 0 && doodler.y + doodler.height - doodler.dy <= platform.y) {
                     doodler.dy = 0; // Stop downward movement
+                
                     doodler.y = platform.y - doodler.height; // Position doodler on top of the platform
+                
                     if(!platform.passed )
                         {
                             score+=1;
                             platform.passed=true
                         }
                 }
+
                 
             }
          
