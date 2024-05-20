@@ -61,6 +61,7 @@ window.addEventListener("load",function(){
                         dy:0
                     
                     }
+                    score=0
                     placeplatform();
                     update()
                 }
