@@ -146,17 +146,20 @@ function update()
     for(let i=0;i<platformarray.length;i++)
         {
             let platform=platformarray[i];
-            
             //Keep doodler static and move the platforms
             if(doodler.dy<0 && doodler.y<board.height*(2/4))
             {
                 platform.y+=10;
                 
               
-            }
+            } 
             
             ctx.drawImage(platform.img,platform.x,platform.y,platform.width,platform.height)
-       
+            if(!platform.passed && doodler.y<platform.y )
+                {
+                    score+=1;
+                    platform.passed=true
+                } 
             if (collision(doodler, platform)) {
                 
                
@@ -165,11 +168,7 @@ function update()
                 
                     doodler.y = platform.y - doodler.height; // Position doodler on top of the platform
                 
-                    if(!platform.passed )
-                        {
-                            score+=1;
-                            platform.passed=true
-                        }
+              
                 }
 
                 
